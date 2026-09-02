@@ -7,6 +7,11 @@
 3. Copy `.env.example` to `.env` and set local credentials.
 4. Run `uv run crewai run`.
 
+At least one of `GEMINI_API_KEY`, `GROQ_API_KEY`, or `OPENROUTER_API_KEY` must
+be configured. The terminal logs each model attempt without printing secrets.
+Fallback occurs per model call, so a later provider failure does not discard
+tasks that already completed.
+
 Generated files in `output/` and `sandbox*/` are local artifacts and are excluded from publication.
 
 ## Verification

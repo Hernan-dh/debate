@@ -12,6 +12,9 @@ class Debate():
     agents: list[BaseAgent]
     tasks: list[Task]
 
+    def __init__(self, llm):
+        self.llm = llm
+
     # Learn more about YAML configuration files here:
     # Agents: https://docs.crewai.com/concepts/agents#yaml-configuration-recommended
     # Tasks: https://docs.crewai.com/concepts/tasks#yaml-configuration-recommended
@@ -23,6 +26,7 @@ class Debate():
     def debater(self) -> Agent:
         return Agent(
             config=self.agents_config['debater'],
+            llm=self.llm,
             verbose=True
         )
 
@@ -30,6 +34,7 @@ class Debate():
     def judge(self) -> Agent:
         return Agent(
             config=self.agents_config['judge'],
+            llm=self.llm,
             verbose=True
         )
 
@@ -66,6 +71,6 @@ class Debate():
             tasks=self.tasks, # Automatically created by the @task decorator
             process=Process.sequential,
             verbose=True,
-            tracing=True,
+            tracing=False,
             # process=Process.hierarchical, # In case you wanna use that instead https://docs.crewai.com/how-to/Hierarchical/
         )

@@ -20,7 +20,12 @@ crewai install
 ```
 ### Customizing
 
-**Add your `OPENAI_API_KEY` into the `.env` file**
+Copy `.env.example` to `.env` and configure at least one of
+`GEMINI_API_KEY`, `GROQ_API_KEY`, or `OPENROUTER_API_KEY`.
+
+Runtime model names and their quality-first fallback order are committed in
+`src/debate/model_config.py`. A failed model call moves to the next provider
+without restarting completed tasks. Credentials remain local in `.env`.
 
 - Modify `src/debate/config/agents.yaml` to define your agents
 - Modify `src/debate/config/tasks.yaml` to define your tasks
@@ -37,7 +42,8 @@ $ crewai run
 
 This command initializes the debate Crew, assembling the agents and assigning them tasks as defined in your configuration.
 
-This example, unmodified, will run the create a `report.md` file with the output of a research on LLMs in the root folder.
+The command asks for a motion, runs the arguments and judgment, and writes the
+results under `output/`.
 
 ## Understanding Your Crew
 

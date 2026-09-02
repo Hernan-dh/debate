@@ -5,8 +5,14 @@ import warnings
 from datetime import datetime
 
 from debate.crew import Debate
+from debate.model_provider import fallback_llm
 
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
+
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
 # This main file is intended to be a way for you to run your
 # crew locally, so refrain from adding unnecessary logic into this file.
@@ -23,7 +29,8 @@ def run():
     }
 
     try:
-        Debate().crew().kickoff(inputs=inputs)
+        result = Debate(llm=fallback_llm()).crew().kickoff(inputs=inputs)
+        return result
     except Exception as e:
         raise Exception(f"An error occurred while running the crew: {e}")
 
@@ -37,7 +44,9 @@ def train():
         'current_year': str(datetime.now().year)
     }
     try:
-        Debate().crew().train(n_iterations=int(sys.argv[1]), filename=sys.argv[2], inputs=inputs)
+        Debate(llm=fallback_llm()).crew().train(
+            n_iterations=int(sys.argv[1]), filename=sys.argv[2], inputs=inputs
+        )
 
     except Exception as e:
         raise Exception(f"An error occurred while training the crew: {e}")
@@ -47,7 +56,7 @@ def replay():
     Replay the crew execution from a specific task.
     """
     try:
-        Debate().crew().replay(task_id=sys.argv[1])
+        Debate(llm=fallback_llm()).crew().replay(task_id=sys.argv[1])
 
     except Exception as e:
         raise Exception(f"An error occurred while replaying the crew: {e}")
@@ -62,7 +71,9 @@ def test():
     }
 
     try:
-        Debate().crew().test(n_iterations=int(sys.argv[1]), eval_llm=sys.argv[2], inputs=inputs)
+        Debate(llm=fallback_llm()).crew().test(
+            n_iterations=int(sys.argv[1]), eval_llm=sys.argv[2], inputs=inputs
+        )
 
     except Exception as e:
         raise Exception(f"An error occurred while testing the crew: {e}")
@@ -88,7 +99,7 @@ def run_with_trigger():
     }
 
     try:
-        result = Debate().crew().kickoff(inputs=inputs)
+        result = Debate(llm=fallback_llm()).crew().kickoff(inputs=inputs)
         return result
     except Exception as e:
         raise Exception(f"An error occurred while running the crew with trigger: {e}")
