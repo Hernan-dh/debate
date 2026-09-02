@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import random
 from pathlib import Path
 
 import gradio as gr
@@ -36,6 +37,39 @@ UI_TEXT = {
     },
 }
 
+ENGLISH_MOTIONS = (
+    "Remote work should be the default for knowledge workers",
+    "Governments should strictly regulate artificial intelligence",
+    "Universities should replace traditional exams with project-based assessment",
+    "Social media platforms should require verified identities",
+    "A four-day workweek should become the legal standard",
+    "Public transportation should be free in major cities",
+    "Nuclear energy is essential to fighting climate change",
+    "Companies should disclose the salary range for every job opening",
+    "Voting should be mandatory in national elections",
+    "Autonomous vehicles should be prioritized over public transit investment",
+)
+
+SPANISH_MOTIONS = (
+    "El trabajo remoto debería ser la opción predeterminada para los trabajadores del conocimiento",
+    "Los gobiernos deberían regular estrictamente la inteligencia artificial",
+    "Las universidades deberían reemplazar los exámenes tradicionales por evaluaciones basadas en proyectos",
+    "Las plataformas sociales deberían exigir identidades verificadas",
+    "La semana laboral de cuatro días debería convertirse en el estándar legal",
+    "El transporte público debería ser gratuito en las grandes ciudades",
+    "La energía nuclear es esencial para combatir el cambio climático",
+    "Las empresas deberían publicar el rango salarial de cada oferta laboral",
+    "El voto debería ser obligatorio en las elecciones nacionales",
+    "Los vehículos autónomos deberían tener prioridad sobre la inversión en transporte público",
+)
+
+SUGGESTED_INDICES = random.sample(range(len(ENGLISH_MOTIONS)), k=3)
+
+
+def suggested_motions(language: str) -> list[str]:
+    source = SPANISH_MOTIONS if language == "Español" else ENGLISH_MOTIONS
+    return [source[index] for index in SUGGESTED_INDICES]
+
 
 def header_html(language: str) -> str:
     text = UI_TEXT.get(language, UI_TEXT["English"])
@@ -56,18 +90,17 @@ def header_html(language: str) -> str:
 
 def localized_ui(language: str):
     text = UI_TEXT.get(language, UI_TEXT["English"])
-    greeting = [{"role": "assistant", "content": text["greeting"]}]
     return (
         header_html(language),
-        greeting,
-        gr.Textbox(placeholder=text["placeholder"], submit_btn=text["submit"]),
+        gr.Group(visible=language == "English"),
+        gr.Group(visible=language == "Español"),
     )
 
 
 def initialize_language(browser_language: str):
     language = "Español" if (browser_language or "").lower().startswith("es") else "English"
-    header, greeting, textbox = localized_ui(language)
-    return language, header, greeting, textbox
+    header, english_group, spanish_group = localized_ui(language)
+    return language, header, english_group, spanish_group
 
 
 def debate_motion(message: str, _history, language: str) -> str:
@@ -93,6 +126,14 @@ def debate_motion(message: str, _history, language: str) -> str:
     return "\n\n---\n\n".join(sections)
 
 
+def debate_english(message: str, history) -> str:
+    return debate_motion(message, history, "English")
+
+
+def debate_spanish(message: str, history) -> str:
+    return debate_motion(message, history, "Español")
+
+
 initial = UI_TEXT["English"]
 with gr.Blocks() as demo:
     with gr.Row(elem_id="title-row"):
@@ -109,35 +150,65 @@ with gr.Blocks() as demo:
                 elem_id="language-selector",
             )
 
-    chatbot = gr.Chatbot(
-        value=[{"role": "assistant", "content": initial["greeting"]}],
-        show_label=False,
-        height=470,
-        elem_id="debate-chatbot",
-    )
-    textbox = gr.Textbox(
-        placeholder=initial["placeholder"],
-        submit_btn=initial["submit"],
-        show_label=False,
-    )
-    gr.ChatInterface(
-        debate_motion,
-        chatbot=chatbot,
-        textbox=textbox,
-        additional_inputs=[language],
-    )
+    with gr.Group(visible=True) as english_chat:
+        english_examples = suggested_motions("English")
+        with gr.Row(elem_id="motion-examples-en", elem_classes="motion-examples"):
+            english_buttons = [gr.Button(motion) for motion in english_examples]
+        english_textbox = gr.Textbox(
+            placeholder=initial["placeholder"],
+            submit_btn=initial["submit"],
+            show_label=False,
+            render=False,
+        )
+        gr.ChatInterface(
+            debate_english,
+            chatbot=gr.Chatbot(
+                value=[{"role": "assistant", "content": initial["greeting"]}],
+                show_label=False,
+                height=390,
+                elem_id="debate-chat-en",
+            ),
+            textbox=english_textbox,
+            flagging_mode="never",
+        )
+        for button, motion in zip(english_buttons, english_examples):
+            button.click(lambda value=motion: value, outputs=english_textbox)
+    with gr.Group(visible=False) as spanish_chat:
+        spanish = UI_TEXT["Español"]
+        spanish_examples = suggested_motions("Español")
+        with gr.Row(elem_id="motion-examples-es", elem_classes="motion-examples"):
+            spanish_buttons = [gr.Button(motion) for motion in spanish_examples]
+        spanish_textbox = gr.Textbox(
+            placeholder=spanish["placeholder"],
+            submit_btn=spanish["submit"],
+            show_label=False,
+            render=False,
+        )
+        gr.ChatInterface(
+            debate_spanish,
+            chatbot=gr.Chatbot(
+                value=[{"role": "assistant", "content": spanish["greeting"]}],
+                show_label=False,
+                height=390,
+                elem_id="debate-chat-es",
+            ),
+            textbox=spanish_textbox,
+            flagging_mode="never",
+        )
+        for button, motion in zip(spanish_buttons, spanish_examples):
+            button.click(lambda value=motion: value, outputs=spanish_textbox)
 
     language.change(
         localized_ui,
         inputs=language,
-        outputs=[header, chatbot, textbox],
+        outputs=[header, english_chat, spanish_chat],
         js="(language) => { document.title = language === 'Español' ? 'Debate con IA' : 'AI Debate'; return language; }",
     )
     browser_language = gr.Textbox(visible=False)
     demo.load(
         initialize_language,
         inputs=browser_language,
-        outputs=[language, header, chatbot, textbox],
+        outputs=[language, header, english_chat, spanish_chat],
         js="() => navigator.language || ''",
     )
 
