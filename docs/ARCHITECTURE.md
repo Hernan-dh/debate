@@ -10,6 +10,8 @@
 - `src/debate/config/tasks.yaml`: task descriptions and expected outputs.
 - `src/debate/crew.py`: CrewAI agent, task, and crew construction.
 - `src/debate/main.py`: command-line entry points and kickoff inputs.
+- `app.py`: bilingual Gradio chat interface and Render entry point.
+- `styles.py`: shared Agentic Twin visual system for the web interface.
 - `src/debate/model_config.py`: committed quality-first model order.
 - `src/debate/model_provider.py`: shared CrewAI LLM with per-call provider fallback.
 - `knowledge/`: versioned knowledge supplied to the crew.
@@ -27,6 +29,13 @@
 All agents share one fallback-aware LLM. If an individual model call fails,
 only that call is retried: Gemini models first, then Groq, then OpenRouter.
 Completed tasks and their context remain available to the following tasks.
+
+## Web interface
+
+Each chat message is an independent motion. The interface invokes the existing
+sequential CrewAI crew and formats its three task outputs as proposition,
+opposition, and judgment. Gradio concurrency is limited to one execution so
+the versioned task output paths are not written concurrently.
 
 ## Related decisions
 

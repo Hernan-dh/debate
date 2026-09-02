@@ -42,6 +42,21 @@ $ crewai run
 
 This command initializes the debate Crew, assembling the agents and assigning them tasks as defined in your configuration.
 
+### Gradio chatbot
+
+Run the bilingual web interface locally with:
+
+```bash
+uv run python app.py
+```
+
+Open `http://127.0.0.1:7860`. Each message is treated as a motion and returns
+the proposition, opposition, and judge's decision. The interface defaults to
+English unless the browser language starts with `es`.
+
+`render.yaml` defines the Render web service. Configure at least one runtime
+provider key in Render and deploy the repository as a Blueprint or Web Service.
+
 The command asks for a motion, runs the arguments and judgment, and writes the
 results under `output/`.
 

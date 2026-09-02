@@ -26,6 +26,7 @@ def run():
     motion = input("Enter the motion: ")
     inputs = {
         'motion': motion,
+        'language_instruction': 'Respond in English.',
     }
 
     try:
@@ -41,7 +42,8 @@ def train():
     """
     inputs = {
         "topic": "AI LLMs",
-        'current_year': str(datetime.now().year)
+        'current_year': str(datetime.now().year),
+        'language_instruction': 'Respond in English.'
     }
     try:
         Debate(llm=fallback_llm()).crew().train(
@@ -67,7 +69,8 @@ def test():
     """
     inputs = {
         "topic": "AI LLMs",
-        "current_year": str(datetime.now().year)
+        "current_year": str(datetime.now().year),
+        'language_instruction': 'Respond in English.'
     }
 
     try:
@@ -95,7 +98,8 @@ def run_with_trigger():
     inputs = {
         "crewai_trigger_payload": trigger_payload,
         "topic": "",
-        "current_year": ""
+        "current_year": "",
+        "language_instruction": "Respond in English."
     }
 
     try:

@@ -3,6 +3,7 @@ propose:
     You are proposing the motion: {motion}.
     Come up with a clear argument in favor of the motion.
     Be very convincing.
+    {language_instruction}
   expected_output: >
     Your clear argument in favor of the motion, in a concise manner.
   agent: debater
@@ -13,6 +14,7 @@ oppose:
     You are in opposition to the motion: {motion}.
     Come up with a clear argument against the motion.
     Be very convincing.
+    {language_instruction}
   expected_output: >
     Your clear argument against the motion, in a concise manner.
   agent: debater
@@ -21,6 +23,7 @@ oppose:
 decide:
   description: >
     Review the arguments presented by the debaters and decide which side is more convincing.
+    {language_instruction}
   expected_output: >
     Your decision on which side is more convincing, and why.
   agent: judge
