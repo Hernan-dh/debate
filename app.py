@@ -159,6 +159,7 @@ with gr.Blocks() as demo:
             submit_btn=initial["submit"],
             show_label=False,
             render=False,
+            elem_id="motion-input-en",
         )
         gr.ChatInterface(
             debate_english,
@@ -183,6 +184,7 @@ with gr.Blocks() as demo:
             submit_btn=spanish["submit"],
             show_label=False,
             render=False,
+            elem_id="motion-input-es",
         )
         gr.ChatInterface(
             debate_spanish,

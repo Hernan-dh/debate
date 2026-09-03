@@ -199,8 +199,21 @@ button.primary, button[variant='primary'], button.submit, button.submit-button, 
 JS = r"""
 () => {
   document.title = (navigator.language || '').toLowerCase().startsWith('es') ? 'Debate con IA' : 'AI Debate';
+  const placeMotionExamples = () => {
+    for (const suffix of ['en', 'es']) {
+      const examples = document.querySelector(`#motion-examples-${suffix}`);
+      const input = document.querySelector(`#motion-input-${suffix}`);
+      if (examples && input && input.parentElement && examples.nextElementSibling !== input) {
+        input.parentElement.insertBefore(examples, input);
+      }
+    }
+  };
   const focus = () => document.querySelector('textarea')?.focus();
-  setTimeout(focus, 400);
-  new MutationObserver(focus).observe(document.body, { childList: true, subtree: true });
+  const refresh = () => {
+    placeMotionExamples();
+    focus();
+  };
+  setTimeout(refresh, 400);
+  new MutationObserver(refresh).observe(document.body, { childList: true, subtree: true });
 }
 """
