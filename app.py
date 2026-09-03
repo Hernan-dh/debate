@@ -126,12 +126,25 @@ def debate_motion(message: str, _history, language: str) -> str:
     return "\n\n---\n\n".join(sections)
 
 
-def debate_english(message: str, history) -> str:
-    return debate_motion(message, history, "English")
+def submit_motion(message: str, history: list[dict], language: str):
+    motion = (message or "").strip()
+    if not motion:
+        return "", history
+    response = debate_motion(motion, history, language)
+    updated_history = [
+        *history,
+        {"role": "user", "content": motion},
+        {"role": "assistant", "content": response},
+    ]
+    return "", updated_history
 
 
-def debate_spanish(message: str, history) -> str:
-    return debate_motion(message, history, "Español")
+def submit_english(message: str, history: list[dict]):
+    return submit_motion(message, history, "English")
+
+
+def submit_spanish(message: str, history: list[dict]):
+    return submit_motion(message, history, "Español")
 
 
 initial = UI_TEXT["English"]
@@ -152,53 +165,54 @@ with gr.Blocks() as demo:
 
     with gr.Group(visible=True) as english_chat:
         english_examples = suggested_motions("English")
+        english_chatbot = gr.Chatbot(
+            value=[{"role": "assistant", "content": initial["greeting"]}],
+            show_label=False,
+            height=390,
+            elem_id="debate-chat-en",
+        )
+        gr.Markdown("Examples", elem_classes="motion-examples-label")
         with gr.Row(elem_id="motion-examples-en", elem_classes="motion-examples"):
             english_buttons = [gr.Button(motion) for motion in english_examples]
-        english_textbox = gr.Textbox(
-            placeholder=initial["placeholder"],
-            submit_btn=initial["submit"],
-            show_label=False,
-            render=False,
-            elem_id="motion-input-en",
-        )
-        gr.ChatInterface(
-            debate_english,
-            chatbot=gr.Chatbot(
-                value=[{"role": "assistant", "content": initial["greeting"]}],
+        with gr.Row(elem_id="motion-input-row-en", elem_classes="motion-input-row"):
+            english_textbox = gr.Textbox(
+                placeholder=initial["placeholder"],
                 show_label=False,
-                height=390,
-                elem_id="debate-chat-en",
-            ),
-            textbox=english_textbox,
-            flagging_mode="never",
-        )
+                container=False,
+                scale=1,
+                elem_id="motion-input-en",
+            )
+            english_submit = gr.Button(initial["submit"], variant="primary", scale=0)
         for button, motion in zip(english_buttons, english_examples):
             button.click(lambda value=motion: value, outputs=english_textbox)
+        english_submit.click(submit_english, [english_textbox, english_chatbot], [english_textbox, english_chatbot])
+        english_textbox.submit(submit_english, [english_textbox, english_chatbot], [english_textbox, english_chatbot])
+
     with gr.Group(visible=False) as spanish_chat:
         spanish = UI_TEXT["Español"]
         spanish_examples = suggested_motions("Español")
+        spanish_chatbot = gr.Chatbot(
+            value=[{"role": "assistant", "content": spanish["greeting"]}],
+            show_label=False,
+            height=390,
+            elem_id="debate-chat-es",
+        )
+        gr.Markdown("Ejemplos", elem_classes="motion-examples-label")
         with gr.Row(elem_id="motion-examples-es", elem_classes="motion-examples"):
             spanish_buttons = [gr.Button(motion) for motion in spanish_examples]
-        spanish_textbox = gr.Textbox(
-            placeholder=spanish["placeholder"],
-            submit_btn=spanish["submit"],
-            show_label=False,
-            render=False,
-            elem_id="motion-input-es",
-        )
-        gr.ChatInterface(
-            debate_spanish,
-            chatbot=gr.Chatbot(
-                value=[{"role": "assistant", "content": spanish["greeting"]}],
+        with gr.Row(elem_id="motion-input-row-es", elem_classes="motion-input-row"):
+            spanish_textbox = gr.Textbox(
+                placeholder=spanish["placeholder"],
                 show_label=False,
-                height=390,
-                elem_id="debate-chat-es",
-            ),
-            textbox=spanish_textbox,
-            flagging_mode="never",
-        )
+                container=False,
+                scale=1,
+                elem_id="motion-input-es",
+            )
+            spanish_submit = gr.Button(spanish["submit"], variant="primary", scale=0)
         for button, motion in zip(spanish_buttons, spanish_examples):
             button.click(lambda value=motion: value, outputs=spanish_textbox)
+        spanish_submit.click(submit_spanish, [spanish_textbox, spanish_chatbot], [spanish_textbox, spanish_chatbot])
+        spanish_textbox.submit(submit_spanish, [spanish_textbox, spanish_chatbot], [spanish_textbox, spanish_chatbot])
 
     language.change(
         localized_ui,

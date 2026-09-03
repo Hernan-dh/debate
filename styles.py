@@ -160,6 +160,25 @@ body {
   background: var(--ui-raised) !important;
 }
 
+.motion-examples-label,
+.motion-examples-label > div,
+.motion-examples-label .prose,
+.motion-examples-label * {
+  margin: 0 !important;
+  border: 0 !important;
+  background: var(--ui-border) !important;
+  box-shadow: none !important;
+}
+.motion-examples-label { padding: 7px 0 !important; }
+.motion-examples-label > div,
+.motion-examples-label .prose { padding: 0 !important; }
+.motion-examples-label p { color: #909690 !important; font: 400 9px var(--ui-mono) !important; letter-spacing: .08em; }
+#motion-examples-en button,
+#motion-examples-es button { min-height: 46px !important; }
+.motion-input-row { gap: 0 !important; margin: 0 !important; }
+.motion-input-row > div { margin: 0 !important; }
+.motion-input-row button { min-width: 118px !important; }
+
 .block, .form { background: transparent !important; box-shadow: none !important; }
 .chatbot, .chatbot *, .block, .form, button, input, textarea { border-radius: 0 !important; }
 .chatbot > .block-label, .chatbot > label, .chatbot .label-wrap, .chatbot .block-label { display: none !important; }
@@ -199,21 +218,8 @@ button.primary, button[variant='primary'], button.submit, button.submit-button, 
 JS = r"""
 () => {
   document.title = (navigator.language || '').toLowerCase().startsWith('es') ? 'Debate con IA' : 'AI Debate';
-  const placeMotionExamples = () => {
-    for (const suffix of ['en', 'es']) {
-      const examples = document.querySelector(`#motion-examples-${suffix}`);
-      const input = document.querySelector(`#motion-input-${suffix}`);
-      if (examples && input && input.parentElement && examples.nextElementSibling !== input) {
-        input.parentElement.insertBefore(examples, input);
-      }
-    }
-  };
   const focus = () => document.querySelector('textarea')?.focus();
-  const refresh = () => {
-    placeMotionExamples();
-    focus();
-  };
-  setTimeout(refresh, 400);
-  new MutationObserver(refresh).observe(document.body, { childList: true, subtree: true });
+  setTimeout(focus, 400);
+  new MutationObserver(focus).observe(document.body, { childList: true, subtree: true });
 }
 """

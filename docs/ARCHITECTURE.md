@@ -36,6 +36,8 @@ Each chat message is an independent motion. The interface invokes the existing
 sequential CrewAI crew and formats its three task outputs as proposition,
 opposition, and judgment. Gradio concurrency is limited to one execution so
 the versioned task output paths are not written concurrently.
+Each localized chat declares its example label, three motion buttons, and input
+directly below the conversation, without browser-side DOM repositioning.
 
 ## Related decisions
 
