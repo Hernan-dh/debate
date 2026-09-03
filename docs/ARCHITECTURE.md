@@ -2,7 +2,7 @@
 
 ## Purpose
 
-`debate` is a CrewAI project whose agents and tasks are configured in YAML and orchestrated from Python.
+`debate` is a CrewAI project whose agents and tasks are configured in YAML and orchestrated from Python. The runtime is pinned to CrewAI 1.15.18 for reproducible local and deployed execution.
 
 ## Components
 
