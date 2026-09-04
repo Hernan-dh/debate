@@ -27,7 +27,8 @@
 ## Model resilience
 
 All agents share one fallback-aware LLM. If an individual model call fails,
-only that call is retried: Gemini models first, then Groq, then OpenRouter.
+only that call is retried: Gemini 3.8/3.7/3.6 Flash first, then Groq GPT-OSS
+120B, then OpenRouter Nemotron 3 Ultra/Super Free.
 Completed tasks and their context remain available to the following tasks.
 
 ## Web interface
