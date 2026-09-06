@@ -215,6 +215,19 @@ button.primary, button[variant='primary'], button.submit, button.submit-button, 
 }
 """
 
+CSS += r"""
+/* Keep user messages readable, including Markdown descendants. */
+.gradio-container .message-row.user-row :is(.message, .message-bubble, .bubble),
+.gradio-container .message-row[data-role='user'] :is(.message, .message-bubble, .bubble) {
+    background: #c7ff37 !important;
+    color: #111412 !important;
+}
+.gradio-container .message-row.user-row :is(.message, .message-bubble, .bubble) *,
+.gradio-container .message-row[data-role='user'] :is(.message, .message-bubble, .bubble) * {
+    color: #111412 !important;
+}
+"""
+
 JS = r"""
 () => {
   document.title = (navigator.language || '').toLowerCase().startsWith('es') ? 'Debate con IA' : 'AI Debate';

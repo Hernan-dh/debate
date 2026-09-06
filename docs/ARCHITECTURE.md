@@ -43,3 +43,7 @@ directly below the conversation, without browser-side DOM repositioning.
 ## Related decisions
 
 - [Continuous documentation and safe publishing](decisions/0001-continuous-documentation-and-safe-publishing.md)
+
+## Chat feedback
+
+The Gradio chat retains user messages and displays a localized process description while a response is running. The final response replaces the temporary status. Submission renders before the queued backend call; the input and submit button remain disabled until completion.
