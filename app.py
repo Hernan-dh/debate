@@ -4,10 +4,12 @@ from __future__ import annotations
 
 import os
 import random
+import queue
+import threading
 from pathlib import Path
 
 import gradio as gr
-from report_export import download_controls, prepare_with_downloads, finish_with_downloads
+from report_export import download_controls, prepare_with_downloads, finish_with_downloads, finish_with_progress_downloads
 from dotenv import load_dotenv
 
 from debate.crew import Debate
@@ -106,7 +108,7 @@ def initialize_language(browser_language: str):
     return language, header, english_group, spanish_group
 
 
-def debate_motion(message: str, _history, language: str) -> str:
+def debate_motion(message: str, _history, language: str, task_callback=None) -> str:
     language = language if language in UI_TEXT else "English"
     text = UI_TEXT[language]
     motion = (message or "").strip()
@@ -114,7 +116,7 @@ def debate_motion(message: str, _history, language: str) -> str:
         return text["greeting"]
 
     try:
-        result = Debate(llm=fallback_llm()).crew().kickoff(
+        result = Debate(llm=fallback_llm(), task_callback=task_callback).crew().kickoff(
             inputs={
                 "motion": motion,
                 "language_instruction": text["instruction"],
@@ -157,6 +159,42 @@ def finish_submission(history: list[dict], language: str):
     ], gr.Button(interactive=True)
 
 
+def finish_submission_progress(history: list[dict], language: str):
+    if len(history) < 2 or history[-2]["role"] != "user":
+        yield gr.Textbox(interactive=True), history, gr.Button(interactive=True), True
+        return
+    content = history[-2]["content"]
+    motion = content if isinstance(content, str) else "\n".join(block["text"] for block in content if block.get("type") == "text")
+    text = UI_TEXT[language]
+    spanish = language == "Español"
+    stages = (
+        ("**Debatiente de oposición** está usando la **herramienta de búsqueda web** para construir el argumento en contra.", "**Juez** está comparando ambos argumentos para emitir una decisión imparcial.")
+        if spanish else
+        ("**Opposition Debater** is using the **web-search tool** to build the case against.", "**Judge** is comparing both arguments to produce an impartial decision.")
+    )
+    updates = queue.Queue()
+    count = 0
+    def on_task_complete(_output):
+        nonlocal count
+        count += 1
+        if count <= len(stages):
+            updates.put((stages[count - 1], False))
+    def work():
+        try:
+            updates.put((debate_motion(motion, history[:-2], language, task_callback=on_task_complete), True))
+        except Exception as error:
+            print(f"[web] debate failed ({type(error).__name__})", flush=True)
+            updates.put((text["error"], True))
+    thread = threading.Thread(target=work, daemon=True)
+    thread.start()
+    while thread.is_alive() or not updates.empty():
+        try:
+            update, completed = updates.get(timeout=0.1)
+        except queue.Empty:
+            continue
+        yield gr.Textbox(interactive=completed), [*history[:-1], {"role": "assistant", "content": update}], gr.Button(interactive=completed), completed
+
+
 def submit_english(message: str, history: list[dict]):
     return submit_motion(message, history, "English")
 
@@ -169,8 +207,16 @@ def finish_english(history: list[dict]):
     return finish_submission(history, "English")
 
 
+def finish_english_progress(history: list[dict]):
+    yield from finish_submission_progress(history, "English")
+
+
 def finish_spanish(history: list[dict]):
     return finish_submission(history, "Español")
+
+
+def finish_spanish_progress(history: list[dict]):
+    yield from finish_submission_progress(history, "Español")
 
 
 initial = UI_TEXT["English"]
@@ -216,14 +262,14 @@ with gr.Blocks(delete_cache=(3600, 86400)) as demo:
             prepare_with_downloads(submit_english), [english_textbox, english_chatbot],
             [english_textbox, english_chatbot, english_submit, english_report, english_download], queue=False,
         ).success(
-            finish_with_downloads(finish_english, UI_TEXT["English"]["error"]), english_chatbot,
+            finish_with_progress_downloads(finish_english_progress, UI_TEXT["English"]["error"]), english_chatbot,
             [english_textbox, english_chatbot, english_submit, english_report, english_download], show_progress="hidden",
         )
         english_textbox.submit(
             prepare_with_downloads(submit_english), [english_textbox, english_chatbot],
             [english_textbox, english_chatbot, english_submit, english_report, english_download], queue=False,
         ).success(
-            finish_with_downloads(finish_english, UI_TEXT["English"]["error"]), english_chatbot,
+            finish_with_progress_downloads(finish_english_progress, UI_TEXT["English"]["error"]), english_chatbot,
             [english_textbox, english_chatbot, english_submit, english_report, english_download], show_progress="hidden",
         )
 
@@ -255,14 +301,14 @@ with gr.Blocks(delete_cache=(3600, 86400)) as demo:
             prepare_with_downloads(submit_spanish), [spanish_textbox, spanish_chatbot],
             [spanish_textbox, spanish_chatbot, spanish_submit, spanish_report, spanish_download], queue=False,
         ).success(
-            finish_with_downloads(finish_spanish, UI_TEXT["Español"]["error"]), spanish_chatbot,
+            finish_with_progress_downloads(finish_spanish_progress, UI_TEXT["Español"]["error"]), spanish_chatbot,
             [spanish_textbox, spanish_chatbot, spanish_submit, spanish_report, spanish_download], show_progress="hidden",
         )
         spanish_textbox.submit(
             prepare_with_downloads(submit_spanish), [spanish_textbox, spanish_chatbot],
             [spanish_textbox, spanish_chatbot, spanish_submit, spanish_report, spanish_download], queue=False,
         ).success(
-            finish_with_downloads(finish_spanish, UI_TEXT["Español"]["error"]), spanish_chatbot,
+            finish_with_progress_downloads(finish_spanish_progress, UI_TEXT["Español"]["error"]), spanish_chatbot,
             [spanish_textbox, spanish_chatbot, spanish_submit, spanish_report, spanish_download], show_progress="hidden",
         )
 

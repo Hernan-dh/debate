@@ -182,3 +182,13 @@ def finish_with_downloads(finish, error_text):
             report = None
         return textbox, updated, button, report, empty_download()
     return complete
+
+
+def finish_with_progress_downloads(finish, error_text):
+    def complete(history):
+        for textbox, updated, button, completed in finish(history):
+            report = updated[-1]["content"] if len(updated) >= 2 and completed else None
+            if report == error_text:
+                report = None
+            yield textbox, updated, button, report, empty_download()
+    return complete

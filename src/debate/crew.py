@@ -13,8 +13,9 @@ class Debate():
     agents: list[BaseAgent]
     tasks: list[Task]
 
-    def __init__(self, llm):
+    def __init__(self, llm, task_callback=None):
         self.llm = llm
+        self.task_callback = task_callback
 
     # Learn more about YAML configuration files here:
     # Agents: https://docs.crewai.com/concepts/agents#yaml-configuration-recommended
@@ -74,5 +75,6 @@ class Debate():
             process=Process.sequential,
             verbose=True,
             tracing=False,
+            task_callback=self.task_callback,
             # process=Process.hierarchical, # In case you wanna use that instead https://docs.crewai.com/how-to/Hierarchical/
         )
