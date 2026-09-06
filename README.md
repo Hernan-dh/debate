@@ -16,7 +16,7 @@ uv sync
 
 Copy `.env.example` to `.env` (`Copy-Item .env.example .env` in PowerShell, or `cp .env.example .env` on Linux/macOS), then replace only the placeholders for the providers you intend to use. Leave unused credentials empty. Never commit the real `.env`.
 
-Configure at least one model-provider key. Open `http://127.0.0.1:7860`, enter a motion, and read both arguments and the judgment. Use `uv run crewai run` for the CLI.
+Configure at least one model-provider key. `SERPER_API_KEY` is optional: the debater uses Serper when configured and DDGS otherwise. Open `http://127.0.0.1:7860`, enter a motion, and read both arguments and the judgment. Use `uv run crewai run` for the CLI.
 
 ```sh
 uv run python app.py
@@ -38,7 +38,7 @@ save a local copy.
 ## Architecture
 
 ```text
-Gradio / CLI motion -> proposition -> opposition -> judge -> formatted arguments and decision
+Gradio / CLI motion -> debater with optional Serper/DDGS evidence -> proposition -> opposition -> judge -> formatted arguments and decision
 ```
 
 See [architecture](docs/ARCHITECTURE.md) for components, data flow and trust boundaries, and [operations](docs/OPERATIONS.md) for configuration and recovery.

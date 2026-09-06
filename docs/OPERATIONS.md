@@ -15,6 +15,11 @@ be configured. The terminal logs each model attempt without printing secrets.
 Fallback occurs per model call, so a later provider failure does not discard
 tasks that already completed.
 
+`SERPER_API_KEY` is optional. When configured, the debater uses Serper for
+current web evidence; otherwise it uses DDGS, which requires no API key. The
+judge does not search independently and evaluates the arguments produced by
+the debater.
+
 ## Render
 
 Deploy `render.yaml` and configure `GEMINI_API_KEY`, `GROQ_API_KEY`, and/or
