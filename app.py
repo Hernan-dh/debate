@@ -26,6 +26,7 @@ UI_TEXT = {
         "instruction": "Write the complete response in English.",
         "sections": ("Proposition", "Opposition", "Judge's decision"),
         "error": "I couldn't complete this debate. Please try again.",
+        "status": "**Debate pipeline running**\n\n1. **Proposition Debater** is using the **web-search tool** to build the case in favor.\n2. **Opposition Debater** is using the **web-search tool** to build the case against.\n3. **Judge** will compare both arguments and produce an impartial decision.",
     },
     "Español": {
         "subtitle": "ARENA DE ARGUMENTOS MULTIAGENTE",
@@ -35,6 +36,7 @@ UI_TEXT = {
         "instruction": "Escribí la respuesta completa en español.",
         "sections": ("Proposición", "Oposición", "Decisión del juez"),
         "error": "No pude completar este debate. Intentá nuevamente.",
+        "status": "**Flujo de debate en ejecución**\n\n1. **Debatiente de proposición** está usando la **herramienta de búsqueda web** para construir el argumento a favor.\n2. **Debatiente de oposición** está usando la **herramienta de búsqueda web** para construir el argumento en contra.\n3. **Juez** comparará ambos argumentos y emitirá una decisión imparcial.",
     },
 }
 
@@ -132,7 +134,7 @@ def submit_motion(message: str, history: list[dict], language: str):
     message = (message or "").strip()
     if not message:
         raise gr.Error("Ingresá una moción." if language == "Español" else "Enter a motion.")
-    status = "Ejecutando el debate: proposición, oposición y decisión del juez…" if language == "Español" else "Running the debate: proposition, opposition, and judge’s decision…"
+    status = UI_TEXT[language if language in UI_TEXT else "English"]["status"]
     return gr.Textbox(value="", interactive=False), [
         *(history or []),
         {"role": "user", "content": message},
