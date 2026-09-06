@@ -228,6 +228,14 @@ CSS += r"""
 }
 """
 
+#download-controls-en, #download-controls-es { align-items: center; gap: 8px; margin: 0; padding: 6px 8px; border: 1px solid var(--ui-border); background: var(--ui-surface); }
+#download-controls-en > div, #download-controls-es > div { margin: 0; }
+#download-controls-en .format-label, #download-controls-es .format-label { display: flex; align-items: center; margin: 0; color: var(--ui-text); font: 400 16px var(--ui-mono); }
+#download-controls-en label, #download-controls-es label { display: none; }
+#download-controls-en button, #download-controls-es button { min-height: 34px !important; border: 0 !important; background: var(--ui-accent) !important; color: var(--ui-bg) !important; }
+#download-controls-en button:hover, #download-controls-es button:hover { filter: brightness(1.12); }
+#download-controls-en .wrap, #download-controls-es .wrap { min-width: 150px; }
+
 JS = r"""
 () => {
   document.title = (navigator.language || '').toLowerCase().startsWith('es') ? 'Debate con IA' : 'AI Debate';
