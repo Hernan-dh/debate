@@ -13,3 +13,4 @@ sandbox/
 sandbox_*/
 .DS_Store
 Thumbs.db
+.uv-cache/
