@@ -7,6 +7,7 @@ import random
 from pathlib import Path
 
 import gradio as gr
+from report_export import download_controls, prepare_with_downloads, finish_with_downloads
 from dotenv import load_dotenv
 
 from debate.crew import Debate
@@ -171,7 +172,7 @@ def finish_spanish(history: list[dict]):
 
 
 initial = UI_TEXT["English"]
-with gr.Blocks() as demo:
+with gr.Blocks(delete_cache=(3600, 86400)) as demo:
     with gr.Row(elem_id="title-row"):
         with gr.Column(scale=1, min_width=0, elem_id="header-copy"):
             header = gr.HTML(header_html("English"), elem_id="debate-header")
@@ -194,6 +195,7 @@ with gr.Blocks() as demo:
             height=390,
             elem_id="debate-chat-en",
         )
+        english_report, english_download = download_controls("English")
         gr.Markdown("Examples", elem_classes="motion-examples-label")
         with gr.Row(elem_id="motion-examples-en", elem_classes="motion-examples"):
             english_buttons = [gr.Button(motion) for motion in english_examples]
@@ -209,18 +211,18 @@ with gr.Blocks() as demo:
         for button, motion in zip(english_buttons, english_examples):
             button.click(lambda value=motion: value, outputs=english_textbox)
         english_submit.click(
-            submit_english, [english_textbox, english_chatbot],
-            [english_textbox, english_chatbot, english_submit], queue=False,
+            prepare_with_downloads(submit_english), [english_textbox, english_chatbot],
+            [english_textbox, english_chatbot, english_submit, english_report, english_download], queue=False,
         ).success(
-            finish_english, english_chatbot,
-            [english_textbox, english_chatbot, english_submit], show_progress="hidden",
+            finish_with_downloads(finish_english, UI_TEXT["English"]["error"]), english_chatbot,
+            [english_textbox, english_chatbot, english_submit, english_report, english_download], show_progress="hidden",
         )
         english_textbox.submit(
-            submit_english, [english_textbox, english_chatbot],
-            [english_textbox, english_chatbot, english_submit], queue=False,
+            prepare_with_downloads(submit_english), [english_textbox, english_chatbot],
+            [english_textbox, english_chatbot, english_submit, english_report, english_download], queue=False,
         ).success(
-            finish_english, english_chatbot,
-            [english_textbox, english_chatbot, english_submit], show_progress="hidden",
+            finish_with_downloads(finish_english, UI_TEXT["English"]["error"]), english_chatbot,
+            [english_textbox, english_chatbot, english_submit, english_report, english_download], show_progress="hidden",
         )
 
     with gr.Group(visible=False) as spanish_chat:
@@ -232,6 +234,7 @@ with gr.Blocks() as demo:
             height=390,
             elem_id="debate-chat-es",
         )
+        spanish_report, spanish_download = download_controls("Español")
         gr.Markdown("Ejemplos", elem_classes="motion-examples-label")
         with gr.Row(elem_id="motion-examples-es", elem_classes="motion-examples"):
             spanish_buttons = [gr.Button(motion) for motion in spanish_examples]
@@ -247,18 +250,18 @@ with gr.Blocks() as demo:
         for button, motion in zip(spanish_buttons, spanish_examples):
             button.click(lambda value=motion: value, outputs=spanish_textbox)
         spanish_submit.click(
-            submit_spanish, [spanish_textbox, spanish_chatbot],
-            [spanish_textbox, spanish_chatbot, spanish_submit], queue=False,
+            prepare_with_downloads(submit_spanish), [spanish_textbox, spanish_chatbot],
+            [spanish_textbox, spanish_chatbot, spanish_submit, spanish_report, spanish_download], queue=False,
         ).success(
-            finish_spanish, spanish_chatbot,
-            [spanish_textbox, spanish_chatbot, spanish_submit], show_progress="hidden",
+            finish_with_downloads(finish_spanish, UI_TEXT["Español"]["error"]), spanish_chatbot,
+            [spanish_textbox, spanish_chatbot, spanish_submit, spanish_report, spanish_download], show_progress="hidden",
         )
         spanish_textbox.submit(
-            submit_spanish, [spanish_textbox, spanish_chatbot],
-            [spanish_textbox, spanish_chatbot, spanish_submit], queue=False,
+            prepare_with_downloads(submit_spanish), [spanish_textbox, spanish_chatbot],
+            [spanish_textbox, spanish_chatbot, spanish_submit, spanish_report, spanish_download], queue=False,
         ).success(
-            finish_spanish, spanish_chatbot,
-            [spanish_textbox, spanish_chatbot, spanish_submit], show_progress="hidden",
+            finish_with_downloads(finish_spanish, UI_TEXT["Español"]["error"]), spanish_chatbot,
+            [spanish_textbox, spanish_chatbot, spanish_submit, spanish_report, spanish_download], show_progress="hidden",
         )
 
     language.change(
