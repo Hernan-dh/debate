@@ -236,6 +236,7 @@ with gr.Blocks(delete_cache=(3600, 86400)) as demo:
             )
 
     with gr.Group(visible=True) as english_chat:
+        english_report, english_download = download_controls("English")
         english_examples = suggested_motions("English")
         english_chatbot = gr.Chatbot(
             value=[{"role": "assistant", "content": initial["greeting"]}],
@@ -243,7 +244,6 @@ with gr.Blocks(delete_cache=(3600, 86400)) as demo:
             height=390,
             elem_id="debate-chat-en",
         )
-        english_report, english_download = download_controls("English")
         gr.Markdown("Examples", elem_classes="motion-examples-label")
         with gr.Row(elem_id="motion-examples-en", elem_classes="motion-examples"):
             english_buttons = [gr.Button(motion) for motion in english_examples]
@@ -274,6 +274,7 @@ with gr.Blocks(delete_cache=(3600, 86400)) as demo:
         )
 
     with gr.Group(visible=False) as spanish_chat:
+        spanish_report, spanish_download = download_controls("Español")
         spanish = UI_TEXT["Español"]
         spanish_examples = suggested_motions("Español")
         spanish_chatbot = gr.Chatbot(
@@ -282,7 +283,6 @@ with gr.Blocks(delete_cache=(3600, 86400)) as demo:
             height=390,
             elem_id="debate-chat-es",
         )
-        spanish_report, spanish_download = download_controls("Español")
         gr.Markdown("Ejemplos", elem_classes="motion-examples-label")
         with gr.Row(elem_id="motion-examples-es", elem_classes="motion-examples"):
             spanish_buttons = [gr.Button(motion) for motion in spanish_examples]

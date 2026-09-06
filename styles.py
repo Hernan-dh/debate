@@ -232,9 +232,36 @@ CSS += r"""
 #download-controls-en > div, #download-controls-es > div { margin: 0; }
 #download-controls-en .format-label, #download-controls-es .format-label { display: flex; align-items: center; margin: 0; color: var(--ui-text); font: 400 16px var(--ui-mono); }
 #download-controls-en label, #download-controls-es label { display: none; }
-#download-controls-en button, #download-controls-es button { min-height: 34px !important; border: 0 !important; background: var(--ui-accent) !important; color: var(--ui-bg) !important; }
+#download-controls-en .wrap, #download-controls-es .wrap { background: #45444d; border-radius: 4px; }
+#download-controls-en input, #download-controls-es input { color: var(--ui-text); font-family: var(--ui-sans); }
+#download-controls-en button, #download-controls-es button { min-height: 34px !important; border: 0 !important; background: var(--ui-acid) !important; color: var(--ui-bg) !important; }
 #download-controls-en button:hover, #download-controls-es button:hover { filter: brightness(1.12); }
 #download-controls-en .wrap, #download-controls-es .wrap { min-width: 150px; }
+#download-controls-en, #download-controls-es { display:flex!important; flex-wrap:nowrap!important; align-items:center!important; height:74px!important; padding:8px!important; background:#181c19!important; }
+#download-controls-en > div:nth-child(1), #download-controls-es > div:nth-child(1) { flex:0 0 22%!important; width:22%!important; height:48px!important; }
+#download-controls-en > div:nth-child(2), #download-controls-es > div:nth-child(2) { flex:0 0 25%!important; width:25%!important; height:48px!important; }
+#download-controls-en > div:nth-child(3), #download-controls-es > div:nth-child(3) { flex:1 1 auto!important; width:auto!important; height:48px!important; }
+#download-controls-en > div:nth-child(2) .wrap, #download-controls-es > div:nth-child(2) .wrap { height:48px!important; background:#45444d!important; border-radius:4px!important; }
+#download-controls-en > div:nth-child(3) button, #download-controls-es > div:nth-child(3) button { width:100%!important; height:48px!important; background:#c7ff37!important; color:#111412!important; }
+#download-controls-en, #download-controls-es { display:grid!important; grid-template-columns:22% 25% 1fr!important; gap:8px!important; }
+#download-format-label-en, #download-format-label-es { grid-column:1!important; grid-row:1!important; width:auto!important; }
+#download-format-select-en, #download-format-select-es { grid-column:2!important; grid-row:1!important; width:auto!important; }
+#download-format-button-en, #download-format-button-es { grid-column:3!important; grid-row:1!important; width:auto!important; }
+#download-controls-en, #download-controls-es { position:relative!important; display:grid!important; grid-template-columns:25% 75%!important; gap:8px!important; padding:8px 8px 8px 0!important; }
+#download-format-label-en, #download-format-label-es { position:absolute!important; left:0!important; top:50%!important; z-index:5!important; width:22%!important; height:auto!important; transform:translateY(-50%)!important; pointer-events:none!important; }
+#download-format-select-en, #download-format-select-es { grid-column:1!important; grid-row:1!important; margin-left:22%!important; width:78%!important; }
+#download-format-button-en, #download-format-button-es { grid-column:2!important; grid-row:1!important; }
+#download-controls-en, #download-controls-es { display:flex!important; height:auto!important; min-height:64px!important; padding:8px!important; gap:8px!important; align-items:stretch!important; }
+#download-controls-en .download-label-column, #download-controls-es .download-label-column { flex:1 1 0!important; justify-content:center!important; background:transparent!important; }
+#download-controls-en .download-select-column, #download-controls-es .download-select-column { flex:1 1 0!important; background:transparent!important; }
+#download-controls-en .download-button-column, #download-controls-es .download-button-column { flex:2 1 0!important; background:transparent!important; }
+#download-controls-en .format-label, #download-controls-es .format-label { position:static!important; transform:none!important; width:auto!important; height:48px!important; display:flex!important; align-items:center!important; }
+#download-controls-en .download-select-column .wrap, #download-controls-es .download-select-column .wrap { height:48px!important; background:#45444d!important; }
+#download-controls-en .download-button-column button, #download-controls-es .download-button-column button { width:100%!important; height:48px!important; min-height:48px!important; background:#c7ff37!important; color:#111412!important; }
+#download-controls-en, #download-controls-es { min-height: 60px; height: 60px; }
+#download-controls-en > div, #download-controls-es > div { min-height: 0; height: 48px; align-self: center; }
+#download-controls-en .format-label, #download-controls-es .format-label { height: 48px; }
+#download-controls-en button, #download-controls-es button { height: 48px; min-height: 48px; }
 
 JS = r"""
 () => {
