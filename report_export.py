@@ -141,12 +141,12 @@ def download_controls(language):
     spanish = language == "Español"
     report = gr.State(None)
     with gr.Row(elem_id="download-controls-es" if spanish else "download-controls-en"):
-        with gr.Column(scale=1, min_width=0, elem_classes="download-label-column"):
-            gr.Markdown("Formato" if spanish else "Format", elem_classes="format-label")
-        with gr.Column(scale=1, min_width=0, elem_classes="download-select-column"):
-            file_format = gr.Dropdown(choices=[("Markdown (.md)", "md"), ("Word (.docx)", "docx"), ("PDF (.pdf)", "pdf")], value="md", show_label=False, interactive=True)
-        with gr.Column(scale=2, min_width=0, elem_classes="download-button-column"):
-            button = gr.Button("Preparar descarga" if spanish else "Prepare download")
+        gr.Markdown("Formato" if spanish else "Format", elem_classes="format-label")
+        file_format = gr.Dropdown(
+            choices=[("Markdown (.md)", "md"), ("Word (.docx)", "docx"), ("PDF (.pdf)", "pdf")],
+            value="md", show_label=False, interactive=True, scale=1,
+        )
+        button = gr.Button("Preparar descarga" if spanish else "Prepare download", scale=2)
     output = gr.File(label="Descargar informe" if spanish else "Download report", visible=False, interactive=False)
 
     def download(markdown, selected_format):
@@ -186,10 +186,11 @@ def finish_with_downloads(finish, error_text):
 
 
 def finish_with_progress_downloads(finish, error_text):
+    """Preserve report downloads while a Gradio generator publishes task progress."""
     def complete(history):
         for textbox, updated, button, completed in finish(history):
-            report = updated[-1]["content"] if len(updated) >= 2 and completed else None
-            if report == error_text:
+            report = updated[-1]["content"] if len(updated) >= 2 else None
+            if not completed or report == error_text:
                 report = None
             yield textbox, updated, button, report, empty_download()
     return complete
