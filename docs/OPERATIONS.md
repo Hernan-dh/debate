@@ -10,6 +10,10 @@
 For the Gradio interface, run `uv run python app.py` and open
 `http://127.0.0.1:7860`.
 
+## Follow-up conversation
+
+After a completed debate, ordinary chat messages are answered only from its proposition, opposition, and decision. Use `/new-motion <motion>` to run the debate pipeline again.
+
 At least one of `GEMINI_API_KEY`, `GROQ_API_KEY`, or `OPENROUTER_API_KEY` must
 be configured. The terminal logs each model attempt without printing secrets.
 Fallback occurs per model call, so a later provider failure does not discard
