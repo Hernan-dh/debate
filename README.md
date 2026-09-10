@@ -2,10 +2,6 @@
 
 A bilingual assistant for exploring arguments on both sides of a motion and comparing them through a separate generated judgment.
 
-## Attribution
-
-Project built from [Ed Donner's agentic AI engineering course](https://github.com/ed-donner/agents). The upstream MIT copyright notice is preserved in [LICENSE](LICENSE). No endorsement by the course author is implied.
-
 ## Run locally
 
 Python 3.12 and uv are the documented development baseline.  Run the following commands from this repository's root.
