@@ -337,12 +337,12 @@ with gr.Blocks(delete_cache=(3600, 86400)) as demo:
 
     language.change(
         localized_ui, inputs=language, outputs=[header, english_chat, spanish_chat],
-        js="(language) => { document.title = language === 'Español' ? 'Debate con IA' : 'AI Debate'; return language; }",
+            js="(language) => { if (window.__debateAutoLanguage) delete window.__debateAutoLanguage; else try { localStorage.setItem('debate-language', language); } catch {} document.title = language === 'Español' ? 'Debate con IA' : 'AI Debate'; return language; }",
     )
     browser_language = gr.Textbox(visible=False)
     demo.load(
         initialize_language, inputs=browser_language, outputs=[language, header, english_chat, spanish_chat],
-        js="() => navigator.language || ''",
+        js="() => { try { const saved = localStorage.getItem('debate-language'); if (saved === 'Español' || saved === 'English') return saved; } catch {} window.__debateAutoLanguage = true; return navigator.language || ''; }",
     )
 
 demo.queue(default_concurrency_limit=1)
