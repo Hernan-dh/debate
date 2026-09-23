@@ -24,11 +24,12 @@ current web evidence; otherwise it uses DDGS, which requires no API key. The
 judge does not search independently and evaluates the arguments produced by
 the debater.
 
-## Render
+## Container deployment
 
-Deploy `render.yaml` and configure `GEMINI_API_KEY`, `GROQ_API_KEY`, and/or
-`OPENROUTER_API_KEY` in Render. The service binds to `0.0.0.0` and Render's
-`PORT` automatically.
+Build with the included `Dockerfile` and configure `GEMINI_API_KEY`,
+`GROQ_API_KEY`, and/or `OPENROUTER_API_KEY` only in the untracked runtime
+environment. Set `PORT=7860` and `GRADIO_ROOT_PATH=/debate`; bind the service
+to host loopback through Compose and expose it only through Caddy HTTPS.
 
 Generated files in `output/` and `sandbox*/` are local artifacts and are excluded from publication.
 
@@ -99,10 +100,3 @@ must not include prompts, generated content, credentials or personal data.
 CAPTCHA is intentionally disabled. Enable it only after logs or provider metrics
 show automated abuse, and document the selected provider and privacy impact
 before deployment.
-## Container deployment
-
-The public portfolio deployment runs this application in Docker behind Caddy.
-Set `PORT=7860` and `GRADIO_ROOT_PATH` to the externally mounted path (for
-example, `/twin` or `/debate`). Keep the service bound to loopback through
-Docker Compose; Caddy is the only public HTTPS entry point. The runtime
-`.env` remains untracked and is loaded with Compose `env_file`.

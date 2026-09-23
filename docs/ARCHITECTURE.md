@@ -10,7 +10,7 @@
 - `src/debate/config/tasks.yaml`: task descriptions and expected outputs.
 - `src/debate/crew.py`: CrewAI agent, task, and crew construction.
 - `src/debate/main.py`: command-line entry points and kickoff inputs.
-- `app.py`: bilingual Gradio chat interface and Render entry point.
+- `app.py`: bilingual Gradio chat interface and container entry point.
 - `styles.py`: shared Agentic Twin visual system for the web interface.
 - `src/debate/model_config.py`: committed quality-first model order.
 - `src/debate/model_provider.py`: shared CrewAI LLM with per-call provider fallback.
