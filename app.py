@@ -15,6 +15,7 @@ from dotenv import load_dotenv
 from debate.crew import Debate
 from debate.model_provider import fallback_llm
 from styles import CSS, JS
+from runtime_safety import log_failure, public_error_message
 
 ROOT = Path(__file__).resolve().parent
 load_dotenv(ROOT / ".env", override=True)
@@ -142,8 +143,8 @@ def debate_motion(message: str, _history, language: str, task_callback=None) -> 
             inputs={"motion": motion, "language_instruction": text["instruction"]}
         )
     except Exception as error:
-        print(f"[web] debate failed ({type(error).__name__})", flush=True)
-        return text["error"]
+        log_failure("debate.run", error)
+        return public_error_message(error, language, "el debate" if language == "Español" else "the debate")
     outputs = [task.raw for task in result.tasks_output]
     sections = [f"## {title}\n\n{body}" for title, body in zip(text["sections"], outputs)]
     return "\n\n---\n\n".join(sections)
@@ -195,8 +196,9 @@ def finish_submission_progress(history: list[dict], language: str):
     elif prior:
         try:
             response = answer_follow_up(motion, prior, language)
-        except Exception:
-            response = "I couldn't answer from the current debate. Try /new-motion <motion>." if language == "English" else "No pude responder a partir del debate actual. Probá /new-motion <moción>."
+        except Exception as error:
+            log_failure("debate.follow_up", error)
+            response = public_error_message(error, language, "la respuesta" if language == "Español" else "the answer")
         yield gr.Textbox(interactive=True), [*history[:-1], {"role": "assistant", "content": response}], gr.Button(interactive=True), True
         return
     text = UI_TEXT[language]
@@ -218,8 +220,8 @@ def finish_submission_progress(history: list[dict], language: str):
         try:
             updates.put((debate_motion(motion, history[:-2], language, task_callback=on_task_complete), True))
         except Exception as error:
-            print(f"[web] debate failed ({type(error).__name__})", flush=True)
-            updates.put((text["error"], True))
+            log_failure("debate.worker", error)
+            updates.put((public_error_message(error, language, "el debate" if language == "Español" else "the debate"), True))
     thread = threading.Thread(target=work, daemon=True)
     thread.start()
     while thread.is_alive() or not updates.empty():
