@@ -30,6 +30,13 @@ MODEL_FALLBACKS = (
         "GEMINI_API_KEY",
         "https://generativelanguage.googleapis.com/v1beta/openai/",
     ),
+    *(
+        ModelSpec(
+            "Gemini", model, key, "https://generativelanguage.googleapis.com/v1beta/openai/"
+        )
+        for key in ("GEMINI_API_KEY_2", "GEMINI_API_KEY_3", "GEMINI_API_KEY_4")
+        for model in ("gemini-3.8-flash", "gemini-3.7-flash", "gemini-3.6-flash")
+    ),
     ModelSpec(
         "Groq",
         "openai/gpt-oss-120b",
