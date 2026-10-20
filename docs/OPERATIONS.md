@@ -24,6 +24,10 @@ current web evidence; otherwise it uses DDGS, which requires no API key. The
 judge does not search independently and evaluates the arguments produced by
 the debater.
 
+## Phoenix tracing
+
+Tracing is opt-in. Set `PHOENIX_COLLECTOR_ENDPOINT` to a Phoenix OTLP endpoint and, when required, `PHOENIX_API_KEY`. The entry point instruments CrewAI through OpenInference; leaving the endpoint unset sends no traces.
+
 ## Container deployment
 
 Build with the included `Dockerfile` and configure `GEMINI_API_KEY`,

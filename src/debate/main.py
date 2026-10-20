@@ -4,10 +4,13 @@ import warnings
 
 from datetime import datetime
 
+from debate.observability import configure_observability
 from debate.crew import Debate
 from debate.model_provider import fallback_llm
 
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
+
+configure_observability()
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
