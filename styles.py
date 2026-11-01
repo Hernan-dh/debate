@@ -1,7 +1,8 @@
 """Stock Picker visual identity adapted for the debate interface."""
 
 CSS = r"""
-:root { --bg:#f5f2e9; --surface:#fffdf6; --raised:#ebe7dc; --border:#d9d7cd; --text:#13201c; --muted:#5d6b65; --acid:#0d6b4f; --orange:#ef5b35; --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; --sans:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Manrope:wght@400;500;600;700&display=swap');
+:root { --bg:#111412; --surface:#181c19; --raised:#202522; --border:#343a35; --text:#e9e9e3; --muted:#909690; --acid:#c7ff37; --orange:#ff6947; --mono:'DM Mono',monospace; --sans:'Manrope',sans-serif; }
 footer,.built-with,.show-api,.api-docs { display:none!important; }
 html,body,gradio-app { background:var(--bg)!important; color-scheme:dark; }
 body { background-image:linear-gradient(rgb(255 255 255 / 2.5%) 1px,transparent 1px),linear-gradient(90deg,rgb(255 255 255 / 2.5%) 1px,transparent 1px)!important; background-size:42px 42px!important; }
@@ -81,17 +82,6 @@ button { font:500 11px/1.2 var(--mono)!important; }
 #language-label p,.motion-examples-label p { font-size:10px!important; }
 #download-controls-en .format-label,#download-controls-es .format-label { font-size:14px!important; }
 @media (max-width:640px) { .message-row :is(.message,.message-bubble,.bubble),.message-row :is(.message,.message-bubble,.bubble) :is(p,li) { font-size:15px!important; } }
-"""
-
-CSS += r"""
-/* Playwright Automation visual system */
-:root { --bg:#f5f2e9; --surface:#fffdf6; --raised:#ebe7dc; --border:#d9d7cd; --text:#13201c; --muted:#5d6b65; --acid:#0d6b4f; --orange:#ef5b35; --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; --sans:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
-html,body,gradio-app { background:var(--bg)!important; color-scheme:light; } body { background-image:none!important; }
-#title-row { border-color:var(--border)!important; }.debate-headings h1 { color:var(--text)!important; }
-#debate-chat-en,#debate-chat-es { background:var(--surface)!important; border-color:var(--border)!important; box-shadow:none!important; }
-button.primary,button[variant='primary'] { background:var(--orange)!important; border-color:var(--orange)!important; color:#fffdf6!important; }
-.message-row.user-row .message,.message-row[data-role='user'] .message { background:var(--orange)!important; color:#fffdf6!important; }.gradio-container .message-row.user-row .message *,.gradio-container .message-row[data-role='user'] .message * { color:#fffdf6!important; }
-.message-row.bot-row .message,.message-row.bot-row .message-bubble,.message-row[data-role='assistant'] .message,.message-row[data-role='assistant'] .message-bubble { background:var(--surface)!important; border-left-color:var(--acid)!important; color:var(--text)!important; }
 """
 
 JS = r"""
